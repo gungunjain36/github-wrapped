@@ -145,12 +145,6 @@ export default function GitHubCard() {
                   <span>{userData.stats.streak} days</span>
                 </div>
               )}
-              {userData?.stats?.privateRepos > 0 && (
-                <div className="flex justify-between">
-                  <span>Private Repositories</span>
-                  <span>{userData.stats.privateRepos}</span>
-                </div>
-              )}
               {userData?.stats?.privateStats && (
                 <div className="mt-4 space-y-2 text-xs text-gray-500">
                   {userData.stats.privateStats.totalRepos > 0 && (
