@@ -4,23 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { GitCommit, GitFork, Star } from "lucide-react";
 
-const GitHubWrappedCard = () => {
+const GitHubWrappedCard = (userData) => {
   // Mock data - replace with actual data in a real application
-  const userData = {
-    username: "octocat",
-    totalContributions: 3642,
-    longestStreak: 23,
-    topLanguages: [
-      { name: "JavaScript", percentage: 40 },
-      { name: "TypeScript", percentage: 30 },
-      { name: "Python", percentage: 20 },
-      { name: "Other", percentage: 10 },
-    ],
-    totalRepositories: 56,
-    totalStars: 1337,
-    totalForks: 420,
-  };
-
+  
   return (
     <Card className="w-full max-w-md bg-[#0d1117] text-white">
       <CardHeader className="border-b border-[#30363d]">

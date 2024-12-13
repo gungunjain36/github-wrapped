@@ -3,32 +3,12 @@
 import { useState } from 'react';
 import { Github, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import axios from 'axios';
+import fetchUserInfo from '../utils/fetchUser';
 
 export default function GithubUsernameInput() {
   const [username, setUsername] = useState('');
   const [error, setError] = useState('');
   const [userData, setUserData] = useState(null);
-
-  const fetchUserInfo = async (username) => {
-    const url = `https://api.github.com/users/${username}`;
-
-    try {
-      const response = await axios.get(url);
-      setError('');
-      setUserData(response.data);
-      return response.data;
-    } catch (error) {
-      setUserData(null);
-      if (error.response && error.response.status === 404) {
-        setError('User not found');
-      } else if (error.response && error.response.status === 403) {
-        setError('Rate limit exceeded. Try again later.');
-      } else {
-        setError('An error occurred. Please try again.');
-      }
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +16,7 @@ export default function GithubUsernameInput() {
       setError('Please enter a valid username');
       return;
     }
-    await fetchUserInfo(username);
+    await setUserData(fetchUserInfo(username));
   };
 
   return (
@@ -60,7 +40,7 @@ export default function GithubUsernameInput() {
       </motion.div>
 
       <motion.div
-        className="z-10 w-full max-w-md p-8 rounded-xl shadow-2xl bg-white"
+        className="z-10 w-full max-w-md p-8 rounded-xl shadow-2xl"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -105,7 +85,7 @@ export default function GithubUsernameInput() {
             </span>
           </motion.button>
         </form>
-        {error && <p className="mt-4 text-red-600">{error}</p>}
+        {/* {error && <p className="mt-4 text-red-600">{error}</p>}
         {userData && (
           <div className="mt-6 space-y-4 text-center">
             <img
@@ -118,7 +98,7 @@ export default function GithubUsernameInput() {
             <p>Followers: {userData.followers}</p>
             <p>Following: {userData.following}</p>
           </div>
-        )}
+        )} */}
       </motion.div>
     </div>
   );
