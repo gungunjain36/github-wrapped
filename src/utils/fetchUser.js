@@ -5,6 +5,7 @@ const fetchUserInfo = async (username) => {
 
     try {
       const response = await axios.get(url);
+      console.log(response);
       return response.data;
     } catch (error) {
       if (error.response && error.response.status === 404) {

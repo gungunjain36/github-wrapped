@@ -1,26 +1,50 @@
+/* eslint-disable no-unused-vars */
 'use client';
 
 import { useState } from 'react';
 import { Github, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import fetchUserInfo from '../utils/fetchUser';
+import Loader from './Loader';
+import { useNavigate } from 'react-router-dom';
+
+
 
 export default function GithubUsernameInput() {
-  const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
-  const [userData, setUserData] = useState(null);
+        const [username, setUsername] = useState('');
+        const [, setError] = useState('');
+        const [loading, setLoading] = useState(false); // New state for loading
+        const navigate = useNavigate(); // For navigation
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!username.trim()) {
-      setError('Please enter a valid username');
-      return;
-    }
-    await setUserData(fetchUserInfo(username));
-  };
+        const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!username.trim()) {
+            // eslint-disable-next-line no-undef
+            setError('Please enter a valid username');
+            return;
+        }
+
+        setLoading(true); // Start loading
+        try {
+            const userData = await fetchUserInfo(username);
+            setLoading(false)
+            navigate('/github-card', { state: { userData } });
+        } catch (err) {
+            setLoading(false); // Stop loading
+            setError('Failed to fetch user data. Please try again.');
+        }
+    };
 
   return (
+    
     <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-800 to-gray-900 overflow-hidden">
+        {loading ? (
+            setInterval(()=>{
+                <Loader /> 
+            },10000)
+        // Show loader while fetching data
+      ) : (
+      <div> 
       <motion.div
         className="absolute inset-0 z-0"
         initial={{ opacity: 0 }}
@@ -80,26 +104,27 @@ export default function GithubUsernameInput() {
             transition={{ duration: 0.2 }}
           >
             <span className="flex items-center justify-center space-x-2">
-              <span>Submit</span>
+              <span>Generate Card</span>
               <ArrowRight className="w-5 h-5" />
             </span>
           </motion.button>
+
+          <motion.button
+            className="w-full px-4 py-3 text-white bg-blue-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 ease-in-out transform"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+          >
+            <span className="flex items-center justify-center space-x-2">
+              <span>Wrapped</span>
+              <ArrowRight className="w-5 h-5" />
+            </span>
+          </motion.button>
+
         </form>
-        {/* {error && <p className="mt-4 text-red-600">{error}</p>}
-        {userData && (
-          <div className="mt-6 space-y-4 text-center">
-            <img
-              src={userData.avatar_url}
-              alt={userData.login}
-              className="w-24 h-24 mx-auto rounded-full"
-            />
-            <h2 className="text-xl font-semibold">{userData.name || userData.login}</h2>
-            <p>Repositories: {userData.public_repos}</p>
-            <p>Followers: {userData.followers}</p>
-            <p>Following: {userData.following}</p>
-          </div>
-        )} */}
       </motion.div>
+      </div>)}
     </div>
   );
 }
+// 
