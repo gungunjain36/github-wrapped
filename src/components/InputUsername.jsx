@@ -2,129 +2,103 @@
 'use client';
 
 import { useState } from 'react';
-import { Github, ArrowRight } from 'lucide-react';
+import { Github, ArrowRight, Share2, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import fetchUserInfo from '../utils/fetchUser';
 import Loader from './Loader';
 import { useNavigate } from 'react-router-dom';
-
-
+import AbstractBackground from './AbstractBackground';
 
 export default function GithubUsernameInput() {
-        const [username, setUsername] = useState('');
-        const [, setError] = useState('');
-        const [loading, setLoading] = useState(false); // New state for loading
-        const navigate = useNavigate(); // For navigation
+    const [username, setUsername] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
-        const handleSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!username.trim()) {
-            // eslint-disable-next-line no-undef
             setError('Please enter a valid username');
             return;
         }
 
-        setLoading(true); // Start loading
+        setLoading(true);
         try {
             const userData = await fetchUserInfo(username);
-            setLoading(false)
+            setLoading(false);
             navigate('/github-card', { state: { userData } });
         } catch (err) {
-            setLoading(false); // Stop loading
+            setLoading(false);
             setError('Failed to fetch user data. Please try again.');
         }
     };
 
-  return (
-    
-    <div className="relative flex items-center justify-center min-h-screen bg-gradient-to-br from-black via-gray-800 to-gray-900 overflow-hidden">
-        {loading ? (
-            setInterval(()=>{
-                <Loader /> 
-            },10000)
-        // Show loader while fetching data
-      ) : (
-      <div> 
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <motion.div
-          className="absolute top-0 left-0 w-72 h-72 bg-blue-600 opacity-20 rounded-full filter blur-3xl"
-          animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        ></motion.div>
-        <motion.div
-          className="absolute bottom-0 right-0 w-96 h-96 bg-purple-600 opacity-20 rounded-full filter blur-3xl"
-          animate={{ x: [0, -100, 0], y: [0, -50, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-        ></motion.div>
-      </motion.div>
+    return (
+        <div className="relative min-h-screen bg-[#0d1117] overflow-hidden">
+            <AbstractBackground />
+            
+            {loading ? (
+                <Loader />
+            ) : (
+                <div className="relative z-10 container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
+                    <motion.div
+                        className="w-full max-w-xl"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        {/* Arc-style Card */}
+                        <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20">
+                            <div className="text-center mb-8">
+                                <h1 className="text-2xl text-white mb-2">YOUR GITHUB WRAPPED CARD</h1>
+                                <div className="w-full aspect-[1.6] rounded-2xl bg-gradient-to-br from-purple-500/30 via-blue-500/30 to-pink-500/30 backdrop-blur-xl mb-6">
+                                    {/* Preview area */}
+                                    <div className="w-full h-full flex items-center justify-center">
+                                        <Github className="w-16 h-16 text-white/50" />
+                                    </div>
+                                </div>
+                                <p className="text-gray-400 text-sm">
+                                    It's time to discover your GitHub journey and share your achievements
+                                </p>
+                            </div>
 
-      <motion.div
-        className="z-10 w-full max-w-md p-8 rounded-xl shadow-2xl"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-      >
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <motion.div
-            className="flex items-center space-x-2 text-2xl font-bold text-gray-700"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-          >
-            <Github className="w-8 h-8 text-blue-600" />
-            <h2>GitHub Username</h2>
-          </motion.div>
-          <motion.div
-            className="relative"
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter your GitHub username"
-              className="w-full px-4 py-3 text-gray-700 bg-gray-200 border-2 border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-300 ease-in-out"
-            />
-            <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400">
-              @github.com
-            </span>
-          </motion.div>
-          <motion.button
-            type="submit"
-            className="w-full px-4 py-3 text-white bg-blue-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 ease-in-out transform"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-          >
-            <span className="flex items-center justify-center space-x-2">
-              <span>Generate Card</span>
-              <ArrowRight className="w-5 h-5" />
-            </span>
-          </motion.button>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Enter your GitHub username"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-white/30 transition-all"
+                                    />
+                                </div>
 
-          <motion.button
-            className="w-full px-4 py-3 text-white bg-blue-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 ease-in-out transform"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ duration: 0.2 }}
-          >
-            <span className="flex items-center justify-center space-x-2">
-              <span>Wrapped</span>
-              <ArrowRight className="w-5 h-5" />
-            </span>
-          </motion.button>
+                                <motion.button
+                                    type="submit"
+                                    className="w-full px-6 py-3 bg-blue-600 text-white rounded-xl flex items-center justify-center space-x-2 hover:bg-blue-700 transition-colors"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                >
+                                    <span>Get Started</span>
+                                    <ArrowRight className="w-5 h-5" />
+                                </motion.button>
+                            </form>
 
-        </form>
-      </motion.div>
-      </div>)}
-    </div>
-  );
+                            <div className="mt-6 flex justify-center space-x-4">
+                                <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                                    <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                                        <Share2 className="w-5 h-5 text-gray-400" />
+                                    </motion.div>
+                                </button>
+                                <button className="p-2 rounded-lg bg-white/5 hover:bg-white/10 transition-colors">
+                                    <Download className="w-5 h-5 text-gray-400" />
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </div>
+    );
 }
 // 
